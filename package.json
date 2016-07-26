@@ -1,0 +1,31 @@
+{
+  "name": "graphon",
+  "version": "0.0.0",
+  "description": "Isomorphic GraphQl client",
+  "main": "index.js",
+  "scripts": {
+    "test": "xo && ava"
+  },
+  "keywords": [
+    "graphql",
+    "isomorphic",
+    "client"
+  ],
+  "author": "frux",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frux/graphon.git"
+  },
+  "bugs": {
+    "url": "https://github.com/frux/graphon/issues"
+  },
+  "homepage": "https://github.com/frux/graphon#readme",
+  "dependencies": {
+    "fetch-ponyfill": "^1.0.0"
+  },
+  "devDependencies": {
+    "ava": "^0.15.2",
+    "xo": "^0.16.0"
+  }
+}
