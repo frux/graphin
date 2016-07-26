@@ -1,6 +1,8 @@
 var fetch = require('fetch-ponyfill');
 
 /**
+ * Graphon class
+ * @param {string} endpoint – GraphQL endpoint URL
  * @constructor
  */
 function Graphon(endpoint, params) {
@@ -21,8 +23,9 @@ function Graphon(endpoint, params) {
  * Fetches query
  * @param {string} url – Url to fetch
  * @param {object} options – Request options
- * @param {'omit'|'same-origin'|'include'|undefined} oprions.credential – Should send cookies
+ * @param {'omit'|'same-origin'|'include'|undefined} options.credential – Should send cookies
  * @returns {Promise}
+ * @private
  */
 Graphon.prototype._fetch = function (url, options) {
 	options = options || {};
@@ -44,13 +47,11 @@ Graphon.prototype._fetch = function (url, options) {
 };
 
 /**
- * Fetches GraphQL Query
- * @param {string} url – Url to fetch
+ * Makes GraphQL Query
+ * @param {string} query – GraphQL Query
  * @param {object} options – Request options
- * @param {number} cache – Time to live cache in ms
+ * @param {number} options.cache – Time to live cache in ms
  * @param {object} options.fetch – Fetch options
- * @param {string} options.fetch.method – Request method. Default 'GET'.
- * @param {'omit'|'same-origin'|'include'|undefined} oprions.fetch.credential – Should send cookies. Default 'omit'.
  * @returns {Promise}
  */
 Graphon.prototype.query = function (query, options) {
@@ -82,13 +83,11 @@ Graphon.prototype.query = function (query, options) {
 };
 
 /**
- * Fetches GraphQL Mutation
- * @param {string} url – Url to fetch
+ * Makes GraphQL Mutation
+ * @param {string} url – GraphQL Query
  * @param {object} options – Request options
- * @param {number} cache – Time to live cache in ms
+ * @param {number} options.cache – Time to live cache in ms
  * @param {object} options.fetch – Fetch options
- * @param {string} options.fetch.method – Request method. Default 'POST'.
- * @param {'omit'|'same-origin'|'include'|undefined} oprions.fetch.credential – Should send cookies. Default 'omit'.
  * @returns {Promise}
  */
 Graphon.prototype.mutation = function (query, options) {
