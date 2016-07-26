@@ -1,4 +1,4 @@
-## Graphon
+# Graphon
 Isomorphic JavaScript GraphQL client
 
 ```js
@@ -47,15 +47,17 @@ graphon.mutation(`
 `);
 ```
 
-### API
+## API
 
-#### new Graphon(endpoint) => ``Graphon``
+### new Graphon(endpoint) => ``Graphon``
 
 | Param | Type | Description |
 | --- | --- | --- |
 | endpoint | ``string`` | GraphQL endpoint URL |
 
-#### graphon.query(url, options) ⇒ ``Promise``
+-----------------
+
+### graphon.query(url, options) ⇒ ``Promise``
 Makes GraphQL Query
 
 | Param | Type | Description |
@@ -65,7 +67,9 @@ Makes GraphQL Query
 | options.cache | ``number`` | Cache TTL in ms |
 | options.fetch | ``object`` | Fetch options |
 
-#### graphon.mutation(url, options) ⇒ ``Promise``
+-----------------
+
+### graphon.mutation(url, options) ⇒ ``Promise``
 Makes GraphQL Mutation
 
 | Param | Type | Description |
