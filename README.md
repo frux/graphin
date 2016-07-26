@@ -7,44 +7,38 @@ import Graphon from 'graphon';
 const graphon = new Graphon('https://my.graphql.endpoint.com');
 
 // Simple GraphQL query
-graphon.query(`
-	query {
-		userList {
-			login
-			name
-			email
-		}
+graphon.query(`{
+	userList {
+		login
+		name
+		email
 	}
-`)
+}`)
 	.then(list => {
 		console.log(list);
 	});
 
 
 // List of users cached for a minute
-graphon.query(`
-	query {
-		photoList {
-			id
-			url
-			description
-			width
-			height
-		}
+graphon.query(`{
+	photoList {
+		id
+		url
+		description
+		width
+		height
 	}
-`, {cache: 60000})
+}`, {cache: 60000})
 	.then(list => {
 		console.log(list);
 	});
 
 // Simple GraphQL mutation
-graphon.mutation(`
-	mutation {
-		updatePhoto(id: 100500, description: "Photo of real Unicorn!") {
-			id
-		}
+graphon.mutation(`mutation {
+	updatePhoto(id: 100500, description: "Photo of real Unicorn!") {
+		id
 	}
-`);
+}`);
 ```
 
 ## API
