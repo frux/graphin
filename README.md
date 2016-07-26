@@ -15,7 +15,7 @@ graphon.query(`{
 	}
 }`)
 	.then(list => {
-		console.log(list);
+		console.log(data.userList);
 	});
 
 
@@ -29,8 +29,8 @@ graphon.query(`{
 		height
 	}
 }`, {cache: 60000})
-	.then(list => {
-		console.log(list);
+	.then(data => {
+		console.log(data.photoList);
 	});
 
 // Simple GraphQL mutation
