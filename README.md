@@ -1,5 +1,5 @@
 # Graphon
-Isomorphic JavaScript GraphQL client
+> Isomorphic JavaScript GraphQL client
 
 ```js
 import Graphon from 'graphon';
@@ -43,7 +43,7 @@ graphon.mutation(`mutation {
 
 ## API
 
-### new Graphon(endpoint) => ``Graphon``
+### new Graphon(endpoint) ⇒ ``Graphon``
 
 | Param | Type | Description |
 | --- | --- | --- |
