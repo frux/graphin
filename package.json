@@ -4,7 +4,7 @@
   "description": "Isomorphic GraphQl client",
   "main": "dist/index.js",
   "scripts": {
-    "test": "xo && ava",
+    "test": "xo && nyc ava",
     "build": "babel src/index.js -o dist/index.js && babel src/index.js -o dist/index.min.js --compact true --no-comments"
   },
   "keywords": [
@@ -22,6 +22,13 @@
     "url": "https://github.com/frux/graphin/issues"
   },
   "homepage": "https://github.com/frux/graphin#readme",
+  "ava": {
+    "verbose": true,
+    "require": [
+      "babel-register"
+    ],
+    "babel": "inherit"
+  },
   "dependencies": {
     "fetch-ponyfill": "^1.0.0"
   },
@@ -32,6 +39,7 @@
     "babel-plugin-transform-runtime": "^6.9.0",
     "babel-preset-es2015": "^6.9.0",
     "babel-runtime": "^6.11.6",
+    "nyc": "^7.1.0",
     "xo": "^0.16.0"
   }
 }
