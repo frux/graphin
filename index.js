@@ -39,7 +39,7 @@ Graphin.prototype._fetch = function (url, options) {
 			return response.json()
 				.then(data => {
 					if (data.errors) {
-						throw new GraphinError(data.errors[0]);
+						throw new GraphinError(data.errors);
 					}
 					return data.data;
 				});
