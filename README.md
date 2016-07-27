@@ -57,7 +57,7 @@ Makes GraphQL Query
 | Param | Type | Description |
 | --- | --- | --- |
 | url | ``string`` | GraphQL Query |
-| options | ``object`` | Request options |
+| options | ``object|undefined`` | Request options. Default {} |
 | options.cache | ``number`` | Cache TTL in ms |
 | options.fetch | ``object`` | Fetch options |
 
@@ -69,6 +69,6 @@ Makes GraphQL Mutation
 | Param | Type | Description |
 | --- | --- | --- |
 | url | ``string`` | GraphQL Query |
-| options | ``object`` | Request options |
+| options | ``object|undefined`` | Request options. Default {} |
 | options.cache | ``number`` | Cache TTL in ms |
 | options.fetch | ``object`` | Fetch options |
