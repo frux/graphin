@@ -60,3 +60,12 @@ Makes GraphQL Query
 | options | ``object|undefined`` | Request options. Default {} |
 | options.cache | ``number`` | Cache TTL in ms |
 | options.fetch | ``object`` | Fetch options |
+
+-----------------
+
+### graphin.getQueryURL(query) ⇒ ``string``
+Converts GraphQL query to URL
+
+| Param | Type | Description |
+| --- | --- | --- |
+| query | ``string`` | GraphQL Query |
