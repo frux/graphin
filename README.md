@@ -34,7 +34,7 @@ graphin.query(`{
 	});
 
 // Simple GraphQL mutation
-graphin.mutation(`mutation {
+graphin.query(`mutation {
 	updatePhoto(id: 100500, description: "Photo of a real Unicorn!") {
 		id
 	}
@@ -53,18 +53,6 @@ graphin.mutation(`mutation {
 
 ### graphin.query(url, options) ⇒ ``Promise``
 Makes GraphQL Query
-
-| Param | Type | Description |
-| --- | --- | --- |
-| url | ``string`` | GraphQL Query |
-| options | ``object|undefined`` | Request options. Default {} |
-| options.cache | ``number`` | Cache TTL in ms |
-| options.fetch | ``object`` | Fetch options |
-
------------------
-
-### graphin.mutation(url, options) ⇒ ``Promise``
-Makes GraphQL Mutation
 
 | Param | Type | Description |
 | --- | --- | --- |

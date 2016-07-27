@@ -105,41 +105,6 @@ export default class Graphin {
 	query(query, options = {}) {
 		const queryURL = this.getQueryURL(query);
 		const fetchOptions = options.fetch || {};
-		fetchOptions.method = fetchOptions.method || 'GET';
-		fetchOptions.credential = fetchOptions.credential || 'omit';
-
-		if (options.cache && this._cacheStorage[queryURL] && !this._cacheStorage[queryURL].isOutdated()) {
-			return Promise.resolve(this._cacheStorage[queryURL].getData());
-		}
-
-		if (typeof query !== 'string') {
-			throw new Error('Query must be a string');
-		}
-
-		return this._fetch(queryURL, fetchOptions)
-			.then(data => {
-				if (options.cache) {
-					if (this._cacheStorage[queryURL]) {
-						this._cacheStorage[queryURL].update(data);
-					} else {
-						this._cacheStorage[queryURL] = new GraphinCache(data, options.cache);
-					}
-				}
-				return data;
-			});
-	}
-
-	/**
-	 * Makes GraphQL Mutation
-	 * @param {string} url – GraphQL Query
-	 * @param {object|undefined} options – Request options. Default {}
-	 * @param {number} options.cache – Time to live cache in ms
-	 * @param {object} options.fetch – Fetch options
-	 * @returns {Promise}
-	 */
-	mutation(query, options = {}) {
-		const queryURL = this.getQueryURL(query);
-		const fetchOptions = options.fetch || {};
 		fetchOptions.method = fetchOptions.method || 'POST';
 		fetchOptions.credential = fetchOptions.credential || 'omit';
 
