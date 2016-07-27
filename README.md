@@ -35,7 +35,7 @@ graphin.query(`{
 
 // Simple GraphQL mutation
 graphin.mutation(`mutation {
-	updatePhoto(id: 100500, description: "Photo of real Unicorn!") {
+	updatePhoto(id: 100500, description: "Photo of a real Unicorn!") {
 		id
 	}
 }`);
