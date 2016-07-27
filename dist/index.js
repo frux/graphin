@@ -146,7 +146,7 @@ var Graphin = function () {
 			var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
 			return fetch(url, options).then(function (response) {
-				if (!response.ok) {
+				if (response.ok) {
 					return response.json().then(function (data) {
 						if (data.errors) {
 							throw new GraphinError(data.errors[0]);
@@ -176,7 +176,7 @@ var Graphin = function () {
 
 			var queryURL = this.getQueryURL(_query);
 			var fetchOptions = options.fetch || {};
-			fetchOptions.method = fetchOptions.method || 'GET';
+			fetchOptions.method = fetchOptions.method || 'POST';
 			fetchOptions.credential = fetchOptions.credential || 'omit';
 
 			if (options.cache && this._cacheStorage[queryURL] && !this._cacheStorage[queryURL].isOutdated()) {
@@ -193,47 +193,6 @@ var Graphin = function () {
 						_this2._cacheStorage[queryURL].update(data);
 					} else {
 						_this2._cacheStorage[queryURL] = new GraphinCache(data, options.cache);
-					}
-				}
-				return data;
-			});
-		}
-
-		/**
-   * Makes GraphQL Mutation
-   * @param {string} url – GraphQL Query
-   * @param {object|undefined} options – Request options. Default {}
-   * @param {number} options.cache – Time to live cache in ms
-   * @param {object} options.fetch – Fetch options
-   * @returns {Promise}
-   */
-
-	}, {
-		key: 'mutation',
-		value: function mutation(query) {
-			var _this3 = this;
-
-			var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-
-			var queryURL = this.getQueryURL(query);
-			var fetchOptions = options.fetch || {};
-			fetchOptions.method = fetchOptions.method || 'POST';
-			fetchOptions.credential = fetchOptions.credential || 'omit';
-
-			if (options.cache && this._cacheStorage[queryURL] && !this._cacheStorage[queryURL].isOutdated()) {
-				return _promise2.default.resolve(this._cacheStorage[queryURL].getData());
-			}
-
-			if (typeof query !== 'string') {
-				throw new Error('Query must be a string');
-			}
-
-			return this._fetch(queryURL, fetchOptions).then(function (data) {
-				if (options.cache) {
-					if (_this3._cacheStorage[queryURL]) {
-						_this3._cacheStorage[queryURL].update(data);
-					} else {
-						_this3._cacheStorage[queryURL] = new GraphinCache(data, options.cache);
 					}
 				}
 				return data;
