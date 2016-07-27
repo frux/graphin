@@ -1,13 +1,13 @@
-# Graphon
+# Graphin
 > Isomorphic JavaScript GraphQL client
 
 ```js
-import Graphon from 'graphon';
+import Graphin from 'graphin';
 
-const graphon = new Graphon('https://my.graphql.endpoint.com');
+const graphin = new Graphin('https://my.graphql.endpoint.com');
 
 // Simple GraphQL query
-graphon.query(`{
+graphin.query(`{
 	userList {
 		login
 		name
@@ -20,7 +20,7 @@ graphon.query(`{
 
 
 // List of users cached for a minute
-graphon.query(`{
+graphin.query(`{
 	photoList {
 		id
 		url
@@ -34,7 +34,7 @@ graphon.query(`{
 	});
 
 // Simple GraphQL mutation
-graphon.mutation(`mutation {
+graphin.mutation(`mutation {
 	updatePhoto(id: 100500, description: "Photo of real Unicorn!") {
 		id
 	}
@@ -43,7 +43,7 @@ graphon.mutation(`mutation {
 
 ## API
 
-### new Graphon(endpoint) ⇒ ``Graphon``
+### new Graphin(endpoint) ⇒ ``Graphin``
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -51,7 +51,7 @@ graphon.mutation(`mutation {
 
 -----------------
 
-### graphon.query(url, options) ⇒ ``Promise``
+### graphin.query(url, options) ⇒ ``Promise``
 Makes GraphQL Query
 
 | Param | Type | Description |
@@ -63,7 +63,7 @@ Makes GraphQL Query
 
 -----------------
 
-### graphon.mutation(url, options) ⇒ ``Promise``
+### graphin.mutation(url, options) ⇒ ``Promise``
 Makes GraphQL Mutation
 
 | Param | Type | Description |

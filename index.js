@@ -1,17 +1,17 @@
-var fetch = require('fetch-ponyfill');
+var fetch = require('fetch-ponyfill')();
 
 /**
- * Graphon class
+ * Graphin class
  * @param {string} endpoint – GraphQL endpoint URL
  * @constructor
  */
-function Graphon(endpoint, params) {
+function Graphin(endpoint, params) {
 	params = params || {};
 
 	if (typeof endpoint !== 'string') {
 		throw new Error('The first argument must be a string containing GraphQL endpoint URL');
 	}
-	this._getQueryURL = function (query) {
+	this.getQueryURL = function (query) {
 		var inlineQuery = encodeURIComponent(query);
 		return `${endpoint}?query=${inlineQuery}`;
 	};
@@ -27,7 +27,7 @@ function Graphon(endpoint, params) {
  * @returns {Promise}
  * @private
  */
-Graphon.prototype._fetch = function (url, options) {
+Graphin.prototype._fetch = function (url, options) {
 	options = options || {};
 
 	return fetch(url, options)
@@ -39,7 +39,7 @@ Graphon.prototype._fetch = function (url, options) {
 			return response.json()
 				.then(data => {
 					if (data.errors) {
-						throw new GraphonError(data.errors[0]);
+						throw new GraphinError(data.errors[0]);
 					}
 					return data.data;
 				});
@@ -54,9 +54,9 @@ Graphon.prototype._fetch = function (url, options) {
  * @param {object} options.fetch – Fetch options
  * @returns {Promise}
  */
-Graphon.prototype.query = function (query, options) {
+Graphin.prototype.query = function (query, options) {
 	options = options || {};
-	const queryURL = this._getQuery(query);
+	const queryURL = this.getQueryURL(query);
 	const fetchOptions = options.fetch || {};
 	fetchOptions.method = fetchOptions.method || 'GET';
 	fetchOptions.credential = fetchOptions.credential || 'omit';
@@ -70,16 +70,16 @@ Graphon.prototype.query = function (query, options) {
 	}
 
 	return this._fetch(queryURL, fetchOptions)
-		.then(function (data) {
+		.then((function (data) {
 			if (options.cache) {
 				if (this._cacheStorage[queryURL]) {
 					this._cacheStorage[queryURL].update(data);
 				} else {
-					this._cacheStorage[queryURL] = new GraphonCache(data, options.cache);
+					this._cacheStorage[queryURL] = new GraphinCache(data, options.cache);
 				}
 			}
 			return data;
-		});
+		}).bind(this));
 };
 
 /**
@@ -90,9 +90,9 @@ Graphon.prototype.query = function (query, options) {
  * @param {object} options.fetch – Fetch options
  * @returns {Promise}
  */
-Graphon.prototype.mutation = function (query, options) {
+Graphin.prototype.mutation = function (query, options) {
 	options = options || {};
-	const queryURL = this._getQuery(query);
+	const queryURL = this.getQueryURL(query);
 	const fetchOptions = options.fetch || {};
 	fetchOptions.method = fetchOptions.method || 'POST';
 	fetchOptions.credential = fetchOptions.credential || 'omit';
@@ -106,36 +106,35 @@ Graphon.prototype.mutation = function (query, options) {
 	}
 
 	return this._fetch(queryURL, fetchOptions)
-		.then(function (data) {
+		.then((function (data) {
 			if (options.cache) {
 				if (this._cacheStorage[queryURL]) {
 					this._cacheStorage[queryURL].update(data);
 				} else {
-					this._cacheStorage[queryURL] = new GraphonCache(data, options.cache);
+					this._cacheStorage[queryURL] = new GraphinCache(data, options.cache);
 				}
 			}
 			return data;
-		});
+		}).bind(this));
 };
 
 /**
- * Graphon request cache class
+ * Graphin request cache class
  * @param {*} data – Any data to cache
  * @param {number} ttl – Time to live in ms
  * @constructor
  */
-function GraphonCache(data, ttl) {
+function GraphinCache(data, ttl) {
 	this._ttl = ttl || 0;
-	this._data = data;
-	this._updateTime();
+	this.update(data);
 }
 
 /**
  * Update cached data
  * @param {*} newData – New data
- * @returns {GraphonCache}
+ * @returns {GraphinCache}
  */
-GraphonCache.prototype.update = function (newData) {
+GraphinCache.prototype.update = function (newData) {
 	this._data = newData;
 	this._timestamp = Number(new Date());
 	return this;
@@ -145,7 +144,7 @@ GraphonCache.prototype.update = function (newData) {
  * Returns cached data
  * @returns {*}
  */
-GraphonCache.prototype.getData = function () {
+GraphinCache.prototype.getData = function () {
 	return this._data;
 };
 
@@ -153,7 +152,7 @@ GraphonCache.prototype.getData = function () {
  * Check if cache is outdated
  * @returns {boolean}
  */
-GraphonCache.prototype.isOutdated = function () {
+GraphinCache.prototype.isOutdated = function () {
 	return (Number(new Date()) - this._timestamp) > this._ttl;
 };
 
@@ -161,8 +160,8 @@ GraphonCache.prototype.isOutdated = function () {
  * @param {Error} err – GraphQL error object
  * @constructor
  */
-function GraphonError(err) {
+function GraphinError(err) {
 	Error.call(this, err.message);
 }
 
-module.exports = Graphon;
+module.exports = Graphin;
