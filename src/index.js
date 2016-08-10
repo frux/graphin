@@ -43,12 +43,42 @@ class GraphinCache {
 }
 
 /**
+ * Removes extra indention
+ * @param {string} text Text with extra indention
+ * @return {string}
+ */
+function normalizeIndent(text) {
+	const reduceSize = /\n(\s*)\S?.*$/.exec(text)[1].length;
+	return text.split('\n').map(row => {
+		return row.replace(new RegExp(`^\\s{${reduceSize}}`), '');
+	}).join('\n');
+}
+
+/**
  * @param {Error} err – GraphQL error object
  * @constructor
  */
 class GraphinError extends Error {
-	constructor(err) {
-		super(err.message);
+	constructor(apiErrors, url) {
+		const query = normalizeIndent(decodeURIComponent(url.replace(/^.+\?query=/, '')));
+		const errors = apiErrors.reduce(
+			(errors, error) => {
+				const message = error.message;
+				const stack = `${message}\n${query}\n${JSON.stringify(error.locations)}`;
+				errors.message += `\n\n${message}`;
+				errors.stack += `\n\n${stack}`;
+				errors.originalErrors.push(new Error(message));
+				return errors;
+			},
+			{
+				originalErrors: [],
+				message: 'GraphQl error:',
+				stack: 'GraphQl error:'
+			});
+		super(errors.message);
+		this.stack = errors.stack;
+		this.originalErrors = errors.errors;
+		this.url = errors.url;
 	}
 }
 
@@ -81,16 +111,17 @@ export default class Graphin {
 	_fetch(url, options = {}) {
 		return fetch(url, options)
 			.then(response => {
-				if (response.ok) {
-					return response.json()
-						.then(data => {
-							if (data.errors) {
-								throw new GraphinError(data.errors[0]);
-							}
+				return response.json()
+					.then(data => {
+						if (response.ok) {
 							return data.data;
-						});
-				}
-				throw new Error(`Request error: ${response.statusText}`);
+						}
+						if (data.errors) {
+							throw new GraphinError(data.errors, url);
+						} else {
+							throw new Error(`Request error: ${response.statusText}`);
+						}
+					});
 			});
 	}
 

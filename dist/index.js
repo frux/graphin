@@ -12,6 +12,10 @@ var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
 
 var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
 
+var _stringify = require('babel-runtime/core-js/json/stringify');
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
 var _possibleConstructorReturn2 = require('babel-runtime/helpers/possibleConstructorReturn');
 
 var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
@@ -92,17 +96,50 @@ var GraphinCache = function () {
 }();
 
 /**
+ * Removes extra indention
+ * @param {string} text Text with extra indention
+ * @return {string}
+ */
+
+
+function normalizeIndent(text) {
+	var reduceSize = /\n(\s*)\S?.*$/.exec(text)[1].length;
+	return text.split('\n').map(function (row) {
+		return row.replace(new RegExp('^\\s{' + reduceSize + '}'), '');
+	}).join('\n');
+}
+
+/**
  * @param {Error} err – GraphQL error object
  * @constructor
  */
 
-
 var GraphinError = function (_Error) {
 	(0, _inherits3.default)(GraphinError, _Error);
 
-	function GraphinError(err) {
+	function GraphinError(apiErrors, url) {
 		(0, _classCallCheck3.default)(this, GraphinError);
-		return (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(GraphinError).call(this, err.message));
+
+		var query = normalizeIndent(decodeURIComponent(url.replace(/^.+\?query=/, '')));
+		var errors = apiErrors.reduce(function (errors, error) {
+			var message = error.message;
+			var stack = message + '\n' + query + '\n' + (0, _stringify2.default)(error.locations);
+			errors.message += '\n\n' + message;
+			errors.stack += '\n\n' + stack;
+			errors.originalErrors.push(new Error(message));
+			return errors;
+		}, {
+			originalErrors: [],
+			message: 'GraphQl error:',
+			stack: 'GraphQl error:'
+		});
+
+		var _this = (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(GraphinError).call(this, errors.message));
+
+		_this.stack = errors.stack;
+		_this.originalErrors = errors.errors;
+		_this.url = errors.url;
+		return _this;
 	}
 
 	return GraphinError;
@@ -146,15 +183,16 @@ var Graphin = function () {
 			var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
 			return fetch(url, options).then(function (response) {
-				if (response.ok) {
-					return response.json().then(function (data) {
-						if (data.errors) {
-							throw new GraphinError(data.errors[0]);
-						}
+				return response.json().then(function (data) {
+					if (response.ok) {
 						return data.data;
-					});
-				}
-				throw new Error('Request error: ' + response.statusText);
+					}
+					if (data.errors) {
+						throw new GraphinError(data.errors, url);
+					} else {
+						throw new Error('Request error: ' + response.statusText);
+					}
+				});
 			});
 		}
 
