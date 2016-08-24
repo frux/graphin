@@ -247,6 +247,7 @@ var Graphin = function () {
 			var queryURL = this.getQueryURL(_query);
 			var options = (0, _assign2.default)(this._options, requestOptions);
 			var fetchOptions = (0, _assign2.default)(this._options.fetch, requestOptions.fetch);
+			var queryLog = '' + normalizeIndent(_query);
 			fetchOptions.method = fetchOptions.method || 'POST';
 			fetchOptions.credential = fetchOptions.credential || 'omit';
 
@@ -258,7 +259,17 @@ var Graphin = function () {
 				throw new Error('Query must be a string');
 			}
 
+			if (options.verbose) {
+				console.time(queryLog);
+			}
+
 			return this._fetch(queryURL, fetchOptions).then(function (data) {
+				if (options.verbose) {
+					console.log('\u001b[92m✔\u001b[0m Graphin:');
+					console.timeEnd(queryLog);
+				}
+				return data;
+			}).then(function (data) {
 				if (options.cache) {
 					if (_this2._cacheStorage[queryURL]) {
 						_this2._cacheStorage[queryURL].update(data);
@@ -267,6 +278,12 @@ var Graphin = function () {
 					}
 				}
 				return data;
+			}).catch(function (err) {
+				if (options.verbose) {
+					console.log('\u001b[91m✖\u001b[0m Graphin:');
+					console.timeEnd(queryLog);
+				}
+				throw err;
 			});
 		}
 	}]);

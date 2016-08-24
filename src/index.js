@@ -153,6 +153,7 @@ export default class Graphin {
 		const queryURL = this.getQueryURL(query);
 		const options = Object.assign(this._options, requestOptions);
 		const fetchOptions = Object.assign(this._options.fetch, requestOptions.fetch);
+		const queryLog = `${normalizeIndent(query)}`;
 		fetchOptions.method = fetchOptions.method || 'POST';
 		fetchOptions.credential = fetchOptions.credential || 'omit';
 
@@ -164,7 +165,18 @@ export default class Graphin {
 			throw new Error('Query must be a string');
 		}
 
+		if (options.verbose) {
+			console.time(queryLog);
+		}
+
 		return this._fetch(queryURL, fetchOptions)
+			.then(data => {
+				if (options.verbose) {
+					console.log('\u001b[92m✔\u001b[0m Graphin:');
+					console.timeEnd(queryLog);
+				}
+				return data;
+			})
 			.then(data => {
 				if (options.cache) {
 					if (this._cacheStorage[queryURL]) {
@@ -174,6 +186,13 @@ export default class Graphin {
 					}
 				}
 				return data;
+			})
+			.catch(err => {
+				if (options.verbose) {
+					console.log('\u001b[91m✖\u001b[0m Graphin:');
+					console.timeEnd(queryLog);
+				}
+				throw err;
 			});
 	}
 }
