@@ -93,7 +93,7 @@ class GraphinError extends Error {
  * @param {number} requestOptions.cache – Time to live cache in ms
  * @param {object} requestOptions.fetch – Fetch options
  * @param {boolean} requestOptions.verbose – Verbose mode
- * @param {function} fetcher – Fetch function (url, options) => Promise
+ * @param {function|undefined} fetcher – Fetch function (url, options) => Promise
  * @constructor
  */
 export default class Graphin {

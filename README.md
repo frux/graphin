@@ -52,7 +52,7 @@ graphin.query(`mutation {
 | options.cache | ``number`` | Cache TTL in ms |
 | options.fetch | ``object`` | Fetch options |
 | options.verbose | ``boolean`` | Verbose mode. Default false |
-| fetcher | ``function`` | Fetch function (url, options) => Promise. Default fetch |
+| fetcher | ``function|undefined`` | Fetch function (url, options) => Promise. Default fetch |
 
 -----------------
 
