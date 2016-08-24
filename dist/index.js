@@ -8,6 +8,10 @@ var _promise = require('babel-runtime/core-js/promise');
 
 var _promise2 = _interopRequireDefault(_promise);
 
+var _assign = require('babel-runtime/core-js/object/assign');
+
+var _assign2 = _interopRequireDefault(_assign);
+
 var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
 
 var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -23,6 +27,10 @@ var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorRet
 var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _typeof2 = require('babel-runtime/helpers/typeof');
+
+var _typeof3 = _interopRequireDefault(_typeof2);
 
 var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
 
@@ -103,10 +111,20 @@ var GraphinCache = function () {
 
 
 function normalizeIndent(text) {
-	var reduceSize = /\n(\s*)\S?.*$/.exec(text)[1].length;
-	return text.split('\n').map(function (row) {
-		return row.replace(new RegExp('^\\s{' + reduceSize + '}'), '');
-	}).join('\n');
+	var indents = /\n(\s*)\S?.*$/.exec(text);
+	if (indents) {
+		var _ret = function () {
+			var reduceSize = indents && indents[1].length;
+			return {
+				v: text.split('\n').map(function (row) {
+					return row.replace(new RegExp('^\\s{' + reduceSize + '}'), '');
+				}).join('\n')
+			};
+		}();
+
+		if ((typeof _ret === 'undefined' ? 'undefined' : (0, _typeof3.default)(_ret)) === "object") return _ret.v;
+	}
+	return text;
 }
 
 /**
@@ -148,12 +166,19 @@ var GraphinError = function (_Error) {
 /**
  * Graphin class
  * @param {string} endpoint – GraphQL endpoint URL
+ * @param {object|undefined} щзешщты – General Graphin requests options. Default {}
+ * @param {number} requestOptions.cache – Time to live cache in ms
+ * @param {object} requestOptions.fetch – Fetch options
+ * @param {boolean} requestOptions.verbose – Verbose mode
+ * @param {function|undefined} fetcher – Fetch function (url, options) => Promise
  * @constructor
  */
 
 
 var Graphin = function () {
 	function Graphin(endpoint) {
+		var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+		var fetcher = arguments.length <= 2 || arguments[2] === undefined ? fetch : arguments[2];
 		(0, _classCallCheck3.default)(this, Graphin);
 
 		if (typeof endpoint !== 'string') {
@@ -164,6 +189,13 @@ var Graphin = function () {
 			return endpoint + '?query=' + inlineQuery;
 		};
 
+		this._options = {
+			cache: options.cache || false,
+			fetch: options.fetch || {},
+			verbose: options.verbose || false
+		};
+		this._fetcher = fetcher;
+
 		this._cacheStorage = {};
 	}
 
@@ -171,7 +203,6 @@ var Graphin = function () {
   * Fetches query
   * @param {string} url – Url to fetch
   * @param {object} options – Request options
-  * @param {'omit'|'same-origin'|'include'|undefined} options.credential – Should send cookies
   * @returns {Promise}
   * @private
   */
@@ -182,7 +213,7 @@ var Graphin = function () {
 		value: function _fetch(url) {
 			var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
-			return fetch(url, options).then(function (response) {
+			return this._fetcher(url, options).then(function (response) {
 				return response.json().then(function (data) {
 					if (response.ok) {
 						return data.data;
@@ -199,9 +230,10 @@ var Graphin = function () {
 		/**
    * Makes GraphQL Query
    * @param {string} query – GraphQL Query
-   * @param {object|undefined} options – Request options. Default {}
-   * @param {number} options.cache – Time to live cache in ms
-   * @param {object} options.fetch – Fetch options
+   * @param {object|undefined} requestOptions – Current request options. Default {}
+   * @param {number} requestOptions.cache – Time to live cache in ms
+   * @param {object} requestOptions.fetch – Fetch options
+   * @param {boolean} requestOptions.verbose – Verbose mode
    * @returns {Promise}
    */
 
@@ -210,10 +242,11 @@ var Graphin = function () {
 		value: function query(_query) {
 			var _this2 = this;
 
-			var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+			var requestOptions = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
 			var queryURL = this.getQueryURL(_query);
-			var fetchOptions = options.fetch || {};
+			var options = (0, _assign2.default)(this._options, requestOptions);
+			var fetchOptions = (0, _assign2.default)(this._options.fetch, requestOptions.fetch);
 			fetchOptions.method = fetchOptions.method || 'POST';
 			fetchOptions.credential = fetchOptions.credential || 'omit';
 
