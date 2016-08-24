@@ -48,10 +48,14 @@ class GraphinCache {
  * @return {string}
  */
 function normalizeIndent(text) {
-	const reduceSize = /\n(\s*)\S?.*$/.exec(text)[1].length;
-	return text.split('\n').map(row => {
-		return row.replace(new RegExp(`^\\s{${reduceSize}}`), '');
-	}).join('\n');
+	const indents = /\n(\s*)\S?.*$/.exec(text);
+	if (indents) {
+		const reduceSize = indents && indents[1].length;
+		return text.split('\n').map(row => {
+			return row.replace(new RegExp(`^\\s{${reduceSize}}`), '');
+		}).join('\n');
+	}
+	return text;
 }
 
 /**
@@ -85,10 +89,15 @@ class GraphinError extends Error {
 /**
  * Graphin class
  * @param {string} endpoint – GraphQL endpoint URL
+ * @param {object|undefined} щзешщты – General Graphin requests options. Default {}
+ * @param {number} requestOptions.cache – Time to live cache in ms
+ * @param {object} requestOptions.fetch – Fetch options
+ * @param {boolean} requestOptions.verbose – Verbose mode
+ * @param {function} fetcher – Fetch function (url, options) => Promise
  * @constructor
  */
 export default class Graphin {
-	constructor(endpoint) {
+	constructor(endpoint, options = {}, fetcher = fetch) {
 		if (typeof endpoint !== 'string') {
 			throw new Error('The first argument must be a string containing GraphQL endpoint URL');
 		}
@@ -97,6 +106,13 @@ export default class Graphin {
 			return `${endpoint}?query=${inlineQuery}`;
 		};
 
+		this._options = {
+			cache: options.cache || false,
+			fetch: options.fetch || {},
+			verbose: options.verbose || false
+		};
+		this._fetcher = fetcher;
+
 		this._cacheStorage = {};
 	}
 
@@ -104,12 +120,11 @@ export default class Graphin {
 	 * Fetches query
 	 * @param {string} url – Url to fetch
 	 * @param {object} options – Request options
-	 * @param {'omit'|'same-origin'|'include'|undefined} options.credential – Should send cookies
 	 * @returns {Promise}
 	 * @private
 	 */
 	_fetch(url, options = {}) {
-		return fetch(url, options)
+		return this._fetcher(url, options)
 			.then(response => {
 				return response.json()
 					.then(data => {
@@ -128,14 +143,16 @@ export default class Graphin {
 	/**
 	 * Makes GraphQL Query
 	 * @param {string} query – GraphQL Query
-	 * @param {object|undefined} options – Request options. Default {}
-	 * @param {number} options.cache – Time to live cache in ms
-	 * @param {object} options.fetch – Fetch options
+	 * @param {object|undefined} requestOptions – Current request options. Default {}
+	 * @param {number} requestOptions.cache – Time to live cache in ms
+	 * @param {object} requestOptions.fetch – Fetch options
+	 * @param {boolean} requestOptions.verbose – Verbose mode
 	 * @returns {Promise}
 	 */
-	query(query, options = {}) {
+	query(query, requestOptions = {}) {
 		const queryURL = this.getQueryURL(query);
-		const fetchOptions = options.fetch || {};
+		const options = Object.assign(this._options, requestOptions);
+		const fetchOptions = Object.assign(this._options.fetch, requestOptions.fetch);
 		fetchOptions.method = fetchOptions.method || 'POST';
 		fetchOptions.credential = fetchOptions.credential || 'omit';
 

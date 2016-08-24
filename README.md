@@ -43,11 +43,16 @@ graphin.query(`mutation {
 
 ## API
 
-### new Graphin(endpoint) ⇒ ``Graphin``
+### new Graphin(endpoint, options, fetcher) ⇒ ``Graphin``
 
 | Param | Type | Description |
 | --- | --- | --- |
 | endpoint | ``string`` | GraphQL endpoint URL |
+| options | ``object|undefined`` | Graphin requests options. Default {} |
+| options.cache | ``number`` | Cache TTL in ms |
+| options.fetch | ``object`` | Fetch options |
+| options.verbose | ``boolean`` | Verbose mode. Default false |
+| fetcher | ``function`` | Fetch function (url, options) => Promise. Default fetch |
 
 -----------------
 
@@ -57,9 +62,10 @@ Makes GraphQL Query
 | Param | Type | Description |
 | --- | --- | --- |
 | url | ``string`` | GraphQL Query |
-| options | ``object|undefined`` | Request options. Default {} |
-| options.cache | ``number`` | Cache TTL in ms |
-| options.fetch | ``object`` | Fetch options |
+| requestOptions | ``object|undefined`` | Request options. Default {} |
+| requestOptions.cache | ``number`` | Cache TTL in ms |
+| requestOptions.fetch | ``object`` | Fetch options |
+| requestOptions.verbose | ``boolean`` | Verbose mode. Default false |
 
 -----------------
 
