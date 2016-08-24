@@ -1,6 +1,6 @@
 {
   "name": "graphin",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Isomorphic GraphQl client",
   "main": "dist/index.js",
   "scripts": {
