@@ -28,12 +28,12 @@ test('Initializing', t => {
 	t.true(graphin instanceof Graphin);
 });
 
-test('Fetch', async t => {
+test('Fetch', t => {
 	const graphin = new Graphin(graphqlEndpoint, {verbose: true}, fetchMock(200, {
 		data: true
 	}));
-	const response = await graphin.query(exampleQuery());
-	t.truthy(response);
+	graphin.query(exampleQuery())
+		.then(response => t.truthy(response));
 });
 
 test('Error', t => {

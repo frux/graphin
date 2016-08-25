@@ -4,47 +4,21 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _promise = require('babel-runtime/core-js/promise');
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-var _promise2 = _interopRequireDefault(_promise);
-
-var _assign = require('babel-runtime/core-js/object/assign');
-
-var _assign2 = _interopRequireDefault(_assign);
-
-var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
-
-var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-var _stringify = require('babel-runtime/core-js/json/stringify');
-
-var _stringify2 = _interopRequireDefault(_stringify);
-
-var _possibleConstructorReturn2 = require('babel-runtime/helpers/possibleConstructorReturn');
-
-var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-var _inherits2 = require('babel-runtime/helpers/inherits');
-
-var _inherits3 = _interopRequireDefault(_inherits2);
-
-var _typeof2 = require('babel-runtime/helpers/typeof');
-
-var _typeof3 = _interopRequireDefault(_typeof2);
-
-var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
-
-var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-var _createClass2 = require('babel-runtime/helpers/createClass');
-
-var _createClass3 = _interopRequireDefault(_createClass2);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _fetchPonyfill = require('fetch-ponyfill');
 
 var _fetchPonyfill2 = _interopRequireDefault(_fetchPonyfill);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var fetch = (0, _fetchPonyfill2.default)();
 
@@ -57,7 +31,7 @@ var fetch = (0, _fetchPonyfill2.default)();
 
 var GraphinCache = function () {
 	function GraphinCache(data, ttl) {
-		(0, _classCallCheck3.default)(this, GraphinCache);
+		_classCallCheck(this, GraphinCache);
 
 		this._ttl = ttl || 0;
 		this.update(data);
@@ -70,7 +44,7 @@ var GraphinCache = function () {
   */
 
 
-	(0, _createClass3.default)(GraphinCache, [{
+	_createClass(GraphinCache, [{
 		key: 'update',
 		value: function update(newData) {
 			this._data = newData;
@@ -100,6 +74,7 @@ var GraphinCache = function () {
 			return Number(new Date()) - this._timestamp > this._ttl;
 		}
 	}]);
+
 	return GraphinCache;
 }();
 
@@ -122,7 +97,7 @@ function normalizeIndent(text) {
 			};
 		}();
 
-		if ((typeof _ret === 'undefined' ? 'undefined' : (0, _typeof3.default)(_ret)) === "object") return _ret.v;
+		if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
 	}
 	return text;
 }
@@ -144,15 +119,15 @@ function _startProfiling() {
  */
 
 var GraphinError = function (_Error) {
-	(0, _inherits3.default)(GraphinError, _Error);
+	_inherits(GraphinError, _Error);
 
 	function GraphinError(apiErrors, url) {
-		(0, _classCallCheck3.default)(this, GraphinError);
+		_classCallCheck(this, GraphinError);
 
 		var query = normalizeIndent(decodeURIComponent(url.replace(/^.+\?query=/, '')));
 		var errors = apiErrors.reduce(function (errors, error) {
 			var message = error.message;
-			var stack = message + '\n' + query + '\n' + (0, _stringify2.default)(error.locations);
+			var stack = message + '\n' + query + '\n' + JSON.stringify(error.locations);
 			errors.message += '\n\n' + message;
 			errors.stack += '\n\n' + stack;
 			errors.originalErrors.push(new Error(message));
@@ -163,7 +138,7 @@ var GraphinError = function (_Error) {
 			stack: 'GraphQl error:'
 		});
 
-		var _this = (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(GraphinError).call(this, errors.message));
+		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(GraphinError).call(this, errors.message));
 
 		_this.stack = errors.stack;
 		_this.originalErrors = errors.errors;
@@ -190,7 +165,8 @@ var Graphin = function () {
 	function Graphin(endpoint) {
 		var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 		var fetcher = arguments.length <= 2 || arguments[2] === undefined ? fetch : arguments[2];
-		(0, _classCallCheck3.default)(this, Graphin);
+
+		_classCallCheck(this, Graphin);
 
 		if (typeof endpoint !== 'string') {
 			throw new Error('The first argument must be a string containing GraphQL endpoint URL');
@@ -219,7 +195,7 @@ var Graphin = function () {
   */
 
 
-	(0, _createClass3.default)(Graphin, [{
+	_createClass(Graphin, [{
 		key: '_fetch',
 		value: function _fetch(url) {
 			var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
@@ -256,14 +232,14 @@ var Graphin = function () {
 			var requestOptions = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
 			var queryURL = this.getQueryURL(_query);
-			var options = (0, _assign2.default)(this._options, requestOptions);
-			var fetchOptions = (0, _assign2.default)(this._options.fetch, requestOptions.fetch);
+			var options = Object.assign(this._options, requestOptions);
+			var fetchOptions = Object.assign(this._options.fetch, requestOptions.fetch);
 			var _stopProfiling = _startProfiling();
 			fetchOptions.method = fetchOptions.method || 'POST';
 			fetchOptions.credential = fetchOptions.credential || 'omit';
 
 			if (options.cache && this._cacheStorage[queryURL] && !this._cacheStorage[queryURL].isOutdated()) {
-				return _promise2.default.resolve(this._cacheStorage[queryURL].getData());
+				return Promise.resolve(this._cacheStorage[queryURL].getData());
 			}
 
 			if (typeof _query !== 'string') {
@@ -292,6 +268,7 @@ var Graphin = function () {
 			});
 		}
 	}]);
+
 	return Graphin;
 }();
 
