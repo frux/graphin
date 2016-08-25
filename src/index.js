@@ -59,6 +59,17 @@ function normalizeIndent(text) {
 }
 
 /**
+ * Remembers time and return function which measure time between calls
+ * @returns {funciton}
+ */
+function _startProfiling() {
+	const startTime = Number(new Date());
+	return function () {
+		return Number(new Date()) - startTime;
+	};
+}
+
+/**
  * @param {Error} err – GraphQL error object
  * @constructor
  */
@@ -153,7 +164,7 @@ export default class Graphin {
 		const queryURL = this.getQueryURL(query);
 		const options = Object.assign(this._options, requestOptions);
 		const fetchOptions = Object.assign(this._options.fetch, requestOptions.fetch);
-		const queryLog = `${normalizeIndent(query)}`;
+		const _stopProfiling = _startProfiling();
 		fetchOptions.method = fetchOptions.method || 'POST';
 		fetchOptions.credential = fetchOptions.credential || 'omit';
 
@@ -165,15 +176,10 @@ export default class Graphin {
 			throw new Error('Query must be a string');
 		}
 
-		if (options.verbose) {
-			console.time(queryLog);
-		}
-
 		return this._fetch(queryURL, fetchOptions)
 			.then(data => {
 				if (options.verbose) {
-					console.log('\u001b[92m✔\u001b[0m Graphin:');
-					console.timeEnd(queryLog);
+					console.log(`Graphin ${_stopProfiling()}ms ✔︎\n${normalizeIndent(query)}\n${queryURL}`);
 				}
 				return data;
 			})
@@ -189,8 +195,7 @@ export default class Graphin {
 			})
 			.catch(err => {
 				if (options.verbose) {
-					console.log('\u001b[91m✖\u001b[0m Graphin:');
-					console.timeEnd(queryLog);
+					console.log(`Graphin ${_stopProfiling()}ms ✘\n${normalizeIndent(query)}\n${queryURL}`);
 				}
 				throw err;
 			});

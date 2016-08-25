@@ -128,6 +128,17 @@ function normalizeIndent(text) {
 }
 
 /**
+ * Remembers time and return function which measure time between calls
+ * @returns {funciton}
+ */
+function _startProfiling() {
+	var startTime = Number(new Date());
+	return function () {
+		return Number(new Date()) - startTime;
+	};
+}
+
+/**
  * @param {Error} err – GraphQL error object
  * @constructor
  */
@@ -247,7 +258,7 @@ var Graphin = function () {
 			var queryURL = this.getQueryURL(_query);
 			var options = (0, _assign2.default)(this._options, requestOptions);
 			var fetchOptions = (0, _assign2.default)(this._options.fetch, requestOptions.fetch);
-			var queryLog = '' + normalizeIndent(_query);
+			var _stopProfiling = _startProfiling();
 			fetchOptions.method = fetchOptions.method || 'POST';
 			fetchOptions.credential = fetchOptions.credential || 'omit';
 
@@ -259,14 +270,9 @@ var Graphin = function () {
 				throw new Error('Query must be a string');
 			}
 
-			if (options.verbose) {
-				console.time(queryLog);
-			}
-
 			return this._fetch(queryURL, fetchOptions).then(function (data) {
 				if (options.verbose) {
-					console.log('\u001b[92m✔\u001b[0m Graphin:');
-					console.timeEnd(queryLog);
+					console.log('Graphin ' + _stopProfiling() + 'ms ✔︎\n' + normalizeIndent(_query) + '\n' + queryURL);
 				}
 				return data;
 			}).then(function (data) {
@@ -280,8 +286,7 @@ var Graphin = function () {
 				return data;
 			}).catch(function (err) {
 				if (options.verbose) {
-					console.log('\u001b[91m✖\u001b[0m Graphin:');
-					console.timeEnd(queryLog);
+					console.log('Graphin ' + _stopProfiling() + 'ms ✘\n' + normalizeIndent(_query) + '\n' + queryURL);
 				}
 				throw err;
 			});
