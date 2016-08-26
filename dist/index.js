@@ -8,7 +8,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _fetchPonyfill = require('fetch-ponyfill');
+var _fetchPonyfill2 = require('fetch-ponyfill');
+
+var _fetchPonyfill3 = _interopRequireDefault(_fetchPonyfill2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
@@ -16,12 +20,17 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var _fetchPonyfill = (0, _fetchPonyfill3.default)();
+
+var fetch = _fetchPonyfill.fetch;
+
 /**
  * Graphin request cache class
  * @param {*} data – Any data to cache
  * @param {number} ttl – Time to live in ms
  * @constructor
  */
+
 var GraphinCache = function () {
 	function GraphinCache(data, ttl) {
 		_classCallCheck(this, GraphinCache);
@@ -157,7 +166,7 @@ var GraphinError = function (_Error) {
 var Graphin = function () {
 	function Graphin(endpoint) {
 		var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-		var fetcher = arguments.length <= 2 || arguments[2] === undefined ? _fetchPonyfill.fetch : arguments[2];
+		var fetcher = arguments.length <= 2 || arguments[2] === undefined ? fetch : arguments[2];
 
 		_classCallCheck(this, Graphin);
 
