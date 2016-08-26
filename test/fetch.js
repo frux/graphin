@@ -29,7 +29,7 @@ test('Initializing', t => {
 });
 
 test('Fetch', t => {
-	const graphin = new Graphin(graphqlEndpoint, {verbose: true}, fetchMock(200, {
+	const graphin = new Graphin(graphqlEndpoint, {}, fetchMock(200, {
 		data: true
 	}));
 	graphin.query(exampleQuery())
@@ -37,7 +37,7 @@ test('Fetch', t => {
 });
 
 test('Error', t => {
-	const graphin = new Graphin(graphqlEndpoint, {verbose: true}, fetchMock(502, {
+	const graphin = new Graphin(graphqlEndpoint, {}, fetchMock(502, {
 		errors: [{message: 'error1'}]
 	}));
 	t.throws(graphin.query(exampleQuery()));
