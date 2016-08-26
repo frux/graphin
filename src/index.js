@@ -1,6 +1,4 @@
-import fetchPonyfill from 'fetch-ponyfill';
-
-const fetch = fetchPonyfill();
+import {fetch} from 'fetch-ponyfill';
 
 /**
  * Graphin request cache class
