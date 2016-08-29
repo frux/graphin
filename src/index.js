@@ -50,7 +50,7 @@ class GraphinCache {
 function normalizeIndent(text) {
 	const indents = /\n(\s*)\S?.*$/.exec(text);
 	if (indents) {
-		const reduceSize = indents && indents[1].length;
+		const reduceSize = indents && indents[indents.length - 1].length;
 		return text.split('\n').map(row => {
 			return row.replace(new RegExp(`^\\s{${reduceSize}}`), '');
 		}).join('\n');
