@@ -19,6 +19,7 @@ test('General caching', t => {
 	const graphin = new Graphin(graphqlEndpoint, {cache: 60000}, fetchMock(200, () => ({
 		data: Number(new Date())
 	})));
+
 	let actual1;
 	let actual2;
 
@@ -64,6 +65,7 @@ test('General cache is disabled by default', t => {
 	const graphin = new Graphin(graphqlEndpoint, {}, fetchMock(200, () => ({
 		data: Number(new Date())
 	})));
+
 	let actual1;
 	let actual2;
 
@@ -73,6 +75,78 @@ test('General cache is disabled by default', t => {
 		.then(response => {
 			actual1 = response;
 			return graphin.query('test');
+		})
+		.then(response => {
+			actual2 = response;
+			t.true(isFinite(actual1));
+			t.true(isFinite(actual2));
+			t.true(actual1 !== actual2);
+		});
+});
+
+test('Query caching', t => {
+	const graphin = new Graphin(graphqlEndpoint, {}, fetchMock(200, () => ({
+		data: Number(new Date())
+	})));
+	const queryOptions = {cache: 60000};
+
+	let actual1;
+	let actual2;
+
+	t.plan(3);
+
+	return graphin.query('test', queryOptions)
+		.then(response => {
+			actual1 = response;
+			return graphin.query('test', queryOptions);
+		})
+		.then(response => {
+			actual2 = response;
+			t.true(isFinite(actual1));
+			t.true(isFinite(actual2));
+			t.true(actual1 === actual2);
+		});
+});
+
+test('Query cache expires', t => {
+	const graphin = new Graphin(graphqlEndpoint, {}, fetchMock(200, () => ({
+		data: Number(new Date())
+	})));
+	const queryOptions = {cache: 100};
+
+	t.plan(3);
+
+	return new Promise(resolve => {
+		graphin.query('test', queryOptions)
+			.then(actual1 => {
+				setTimeout(() => {
+					graphin.query('test', queryOptions)
+						.then(actual2 => {
+							t.true(isFinite(actual1));
+							t.true(isFinite(actual2));
+							t.true(actual1 !== actual2);
+							resolve();
+						});
+				}, 200);
+			});
+	});
+});
+
+test('Query cache is disabled by default', t => {
+	const graphin = new Graphin(graphqlEndpoint, {}, fetchMock(200, () => ({
+		data: Number(new Date())
+	})));
+	const queryOptions = {};
+
+	let actual1;
+	let actual2;
+
+	t.plan(3);
+
+	return graphin.query('test', queryOptions)
+		.then(response => {
+			actual1 = response;
+			return graphin.query('test', queryOptions);
 		})
 		.then(response => {
 			actual2 = response;
