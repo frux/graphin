@@ -17,7 +17,7 @@ function fetchMock(responseCode, response, assertions = () => {}) {
 		return Promise.resolve({
 			ok: responseCode === 200,
 			json() {
-				return Promise.resolve(response);
+				return Promise.resolve(response());
 			}
 		});
 	};
@@ -29,16 +29,16 @@ test('Initializing', t => {
 });
 
 test('Fetch', t => {
-	const graphin = new Graphin(graphqlEndpoint, {}, fetchMock(200, {
+	const graphin = new Graphin(graphqlEndpoint, {}, fetchMock(200, () => ({
 		data: true
-	}));
+	})));
 	graphin.query(exampleQuery())
 		.then(response => t.truthy(response));
 });
 
 test('Error', t => {
-	const graphin = new Graphin(graphqlEndpoint, {}, fetchMock(502, {
+	const graphin = new Graphin(graphqlEndpoint, {}, fetchMock(502, () => ({
 		errors: [{message: 'error1'}]
-	}));
+	})));
 	t.throws(graphin.query(exampleQuery()));
 });
