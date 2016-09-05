@@ -100,7 +100,7 @@ class GraphinError extends Error {
 /**
  * Graphin class
  * @param {string} endpoint – GraphQL endpoint URL
- * @param {object|undefined} щзешщты – General Graphin requests options. Default {}
+ * @param {object|undefined} options – Graphin general options. Affect all requests. Default {}
  * @param {number} requestOptions.cache – Time to live cache in ms
  * @param {object} requestOptions.fetch – Fetch options
  * @param {boolean} requestOptions.verbose – Verbose mode
@@ -154,7 +154,7 @@ export default class Graphin {
 	/**
 	 * Makes GraphQL Query
 	 * @param {string} query – GraphQL Query
-	 * @param {object|undefined} requestOptions – Current request options. Default {}
+	 * @param {object|undefined} requestOptions – Request options. Affect only this request. Merge with general options. Default {}
 	 * @param {number} requestOptions.cache – Time to live cache in ms
 	 * @param {object} requestOptions.fetch – Fetch options
 	 * @param {boolean} requestOptions.verbose – Verbose mode

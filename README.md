@@ -48,7 +48,7 @@ graphin.query(`mutation {
 | Param | Type | Description |
 | --- | --- | --- |
 | endpoint | ``string`` | GraphQL endpoint URL |
-| options | ``object|undefined`` | Graphin requests options. Default {} |
+| options | ``object|undefined`` | Graphin general options. Affect all requests. Default {} |
 | options.cache | ``number`` | Cache TTL in ms |
 | options.fetch | ``object`` | Fetch options |
 | options.verbose | ``boolean`` | Verbose mode. Default false |
@@ -62,7 +62,7 @@ Makes GraphQL Query
 | Param | Type | Description |
 | --- | --- | --- |
 | url | ``string`` | GraphQL Query |
-| requestOptions | ``object|undefined`` | Request options. Default {} |
+| requestOptions | ``object|undefined`` | Request options. Affect only this request. Merge with general options. Default {} |
 | requestOptions.cache | ``number`` | Cache TTL in ms |
 | requestOptions.fetch | ``object`` | Fetch options |
 | requestOptions.verbose | ``boolean`` | Verbose mode. Default false |
