@@ -91,7 +91,7 @@ function normalizeIndent(text) {
 	var indents = /\n(\s*)\S?.*$/.exec(text);
 	if (indents) {
 		var _ret = function () {
-			var reduceSize = indents && indents[1].length;
+			var reduceSize = indents && indents[indents.length - 1].length;
 			return {
 				v: text.split('\n').map(function (row) {
 					return row.replace(new RegExp('^\\s{' + reduceSize + '}'), '');
@@ -234,8 +234,8 @@ var Graphin = function () {
 			var requestOptions = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
 			var queryURL = this.getQueryURL(_query);
-			var options = Object.assign(this._options, requestOptions);
-			var fetchOptions = Object.assign(this._options.fetch, requestOptions.fetch);
+			var options = Object.assign({}, this._options, requestOptions);
+			var fetchOptions = Object.assign({}, this._options.fetch, requestOptions.fetch);
 			var _stopProfiling = _startProfiling();
 			fetchOptions.method = fetchOptions.method || 'POST';
 			fetchOptions.credential = fetchOptions.credential || 'omit';

@@ -162,8 +162,8 @@ export default class Graphin {
 	 */
 	query(query, requestOptions = {}) {
 		const queryURL = this.getQueryURL(query);
-		const options = Object.assign(this._options, requestOptions);
-		const fetchOptions = Object.assign(this._options.fetch, requestOptions.fetch);
+		const options = Object.assign({}, this._options, requestOptions);
+		const fetchOptions = Object.assign({}, this._options.fetch, requestOptions.fetch);
 		const _stopProfiling = _startProfiling();
 		fetchOptions.method = fetchOptions.method || 'POST';
 		fetchOptions.credential = fetchOptions.credential || 'omit';

@@ -32,8 +32,18 @@ test('Fetch', t => {
 	const graphin = new Graphin(graphqlEndpoint, {}, fetchMock(200, () => ({
 		data: true
 	})));
-	graphin.query(exampleQuery())
-		.then(response => t.truthy(response));
+	t.plan(1);
+	return graphin.query(exampleQuery())
+		.then(response => t.true(response));
+});
+
+test('Query options doesn\'t affect general options', t => {
+	const graphin = new Graphin(graphqlEndpoint, {}, fetchMock(200, () => ({
+		data: true
+	})));
+	t.plan(1);
+	return graphin.query(exampleQuery(), {cache: 100500})
+		.then(() => t.is(graphin._options.cache, false));
 });
 
 test('Error', t => {
