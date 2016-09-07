@@ -46,6 +46,12 @@ test('Query options doesn\'t affect general options', t => {
 		.then(() => t.is(graphin._options.cache, false));
 });
 
+test('Default general options', t => {
+	const graphin = new Graphin(graphqlEndpoint, {});
+	t.is(typeof graphin._options.fetch, 'object');
+	t.is(graphin._options.fetch.headers.Accept, 'application/json');
+});
+
 test('Error', t => {
 	const graphin = new Graphin(graphqlEndpoint, {}, fetchMock(502, () => ({
 		errors: [{message: 'error1'}]

@@ -119,7 +119,11 @@ export default class Graphin {
 
 		this._options = {
 			cache: options.cache || false,
-			fetch: options.fetch || {},
+			fetch: options.fetch || {
+				headers: {
+					Accept: 'application/json'
+				}
+			},
 			verbose: options.verbose || false
 		};
 		this._fetcher = fetcher;

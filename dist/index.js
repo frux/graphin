@@ -154,7 +154,7 @@ var GraphinError = function (_Error) {
 /**
  * Graphin class
  * @param {string} endpoint – GraphQL endpoint URL
- * @param {object|undefined} щзешщты – General Graphin requests options. Default {}
+ * @param {object|undefined} options – Graphin general options. Affect all requests. Default {}
  * @param {number} requestOptions.cache – Time to live cache in ms
  * @param {object} requestOptions.fetch – Fetch options
  * @param {boolean} requestOptions.verbose – Verbose mode
@@ -180,7 +180,11 @@ var Graphin = function () {
 
 		this._options = {
 			cache: options.cache || false,
-			fetch: options.fetch || {},
+			fetch: options.fetch || {
+				headers: {
+					Accept: 'application/json'
+				}
+			},
 			verbose: options.verbose || false
 		};
 		this._fetcher = fetcher;
@@ -219,7 +223,7 @@ var Graphin = function () {
 		/**
    * Makes GraphQL Query
    * @param {string} query – GraphQL Query
-   * @param {object|undefined} requestOptions – Current request options. Default {}
+   * @param {object|undefined} requestOptions – Request options. Affect only this request. Merge with general options. Default {}
    * @param {number} requestOptions.cache – Time to live cache in ms
    * @param {object} requestOptions.fetch – Fetch options
    * @param {boolean} requestOptions.verbose – Verbose mode
