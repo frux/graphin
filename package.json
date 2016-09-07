@@ -33,7 +33,7 @@
     "babel": "inherit"
   },
   "dependencies": {
-    "fetch-ponyfill": "^2.0.1"
+    "fetch-ponyfill": "^3.0.0"
   },
   "devDependencies": {
     "ava": "^0.16.0",
