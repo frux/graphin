@@ -1,24 +1,14 @@
 import test from 'ava';
 import Graphin from '../src';
+import {mockFetch} from './fixtures/utils';
 
 const graphqlEndpoint = 'https://graphql.endpoint.com';
-
-function fetchMock(responseCode, response, assertions = () => {}) {
-	return function (url, options) {
-		assertions(url, options);
-		return Promise.resolve({
-			ok: responseCode === 200,
-			json() {
-				return Promise.resolve(response());
-			}
-		});
-	};
-}
+const fetcher = mockFetch({
+	response: () => ({data: Number(new Date())})
+});
 
 test('General caching', t => {
-	const graphin = new Graphin(graphqlEndpoint, {cache: 60000}, fetchMock(200, () => ({
-		data: Number(new Date())
-	})));
+	const graphin = new Graphin(graphqlEndpoint, {cache: 60000}, fetcher);
 
 	let actual1;
 	let actual2;
@@ -39,9 +29,7 @@ test('General caching', t => {
 });
 
 test('General cache expires', t => {
-	const graphin = new Graphin(graphqlEndpoint, {cache: 100}, fetchMock(200, () => ({
-		data: Number(new Date())
-	})));
+	const graphin = new Graphin(graphqlEndpoint, {cache: 100}, fetcher);
 
 	t.plan(3);
 
@@ -62,9 +50,7 @@ test('General cache expires', t => {
 });
 
 test('General cache is disabled by default', t => {
-	const graphin = new Graphin(graphqlEndpoint, {}, fetchMock(200, () => ({
-		data: Number(new Date())
-	})));
+	const graphin = new Graphin(graphqlEndpoint, {}, fetcher);
 
 	let actual1;
 	let actual2;
@@ -85,9 +71,7 @@ test('General cache is disabled by default', t => {
 });
 
 test('Query caching', t => {
-	const graphin = new Graphin(graphqlEndpoint, {}, fetchMock(200, () => ({
-		data: Number(new Date())
-	})));
+	const graphin = new Graphin(graphqlEndpoint, {}, fetcher);
 	const queryOptions = {cache: 60000};
 
 	let actual1;
@@ -109,9 +93,7 @@ test('Query caching', t => {
 });
 
 test('Query cache expires', t => {
-	const graphin = new Graphin(graphqlEndpoint, {}, fetchMock(200, () => ({
-		data: Number(new Date())
-	})));
+	const graphin = new Graphin(graphqlEndpoint, {}, fetcher);
 	const queryOptions = {cache: 100};
 
 	t.plan(3);
@@ -133,9 +115,7 @@ test('Query cache expires', t => {
 });
 
 test('Query cache is disabled by default', t => {
-	const graphin = new Graphin(graphqlEndpoint, {}, fetchMock(200, () => ({
-		data: Number(new Date())
-	})));
+	const graphin = new Graphin(graphqlEndpoint, {}, fetcher);
 	const queryOptions = {};
 
 	let actual1;

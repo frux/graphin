@@ -180,13 +180,10 @@ var Graphin = function () {
 
 		this._options = {
 			cache: options.cache || false,
-			fetch: options.fetch || {
-				headers: {
-					Accept: 'application/json'
-				}
-			},
+			fetch: options.fetch || {},
 			verbose: options.verbose || false
 		};
+
 		this._fetcher = fetcher;
 
 		this._cacheStorage = {};
@@ -206,6 +203,13 @@ var Graphin = function () {
 		value: function _fetch(url) {
 			var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
+			// If Accept header is not defined set it to application/json
+			if (options.headers === undefined) {
+				options.headers = {};
+			}
+			if (options.headers.Accept === undefined && options.headers.accept === undefined) {
+				options.headers.Accept = 'application/json';
+			}
 			return this._fetcher(url, options).then(function (response) {
 				return response.json().then(function (data) {
 					if (response.ok) {

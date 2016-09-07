@@ -4,7 +4,10 @@
   "description": "Isomorphic GraphQl client",
   "main": "dist/index.js",
   "scripts": {
-    "test": "xo && nyc ava",
+    "test": "npm run lint && npm run ava",
+    "lint": "xo",
+    "ava": "ava",
+    "nyc": "nyc ava",
     "build": "babel src/index.js -o dist/index.js && babel src/index.js -o dist/index.min.js --compact true --no-comments"
   },
   "keywords": [
