@@ -52,10 +52,22 @@ test('Default Accept header should be application/json', t => {
 	return graphin.query('test');
 });
 
-test('Error', t => {
+test('Error by code', t => {
 	const fetcher = mockFetch({
 		code: 500,
 		errors: [{message: 'error1'}]
+	});
+	const graphin = new Graphin(graphqlEndpoint, {}, fetcher);
+	t.throws(graphin.query(exampleQuery()));
+});
+
+test('Error by response object', t => {
+	const fetcher = mockFetch({
+		code: 200,
+		response: {
+			data: {test: null},
+			errors: [{message: 'bar'}]
+		}
 	});
 	const graphin = new Graphin(graphqlEndpoint, {}, fetcher);
 	t.throws(graphin.query(exampleQuery()));

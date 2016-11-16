@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -20,9 +20,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var _fetchPonyfill = (0, _fetchPonyfill3.default)();
-
-var fetch = _fetchPonyfill.fetch;
+var _fetchPonyfill = (0, _fetchPonyfill3.default)(),
+    fetch = _fetchPonyfill.fetch;
 
 /**
  * Graphin request cache class
@@ -30,6 +29,7 @@ var fetch = _fetchPonyfill.fetch;
  * @param {number} ttl – Time to live in ms
  * @constructor
  */
+
 
 var GraphinCache = function () {
 	function GraphinCache(data, ttl) {
@@ -140,7 +140,7 @@ var GraphinError = function (_Error) {
 			stack: 'GraphQl error:'
 		});
 
-		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(GraphinError).call(this, errors.message));
+		var _this = _possibleConstructorReturn(this, (GraphinError.__proto__ || Object.getPrototypeOf(GraphinError)).call(this, errors.message));
 
 		_this.stack = errors.stack;
 		_this.originalErrors = errors.errors;
@@ -165,8 +165,8 @@ var GraphinError = function (_Error) {
 
 var Graphin = function () {
 	function Graphin(endpoint) {
-		var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-		var fetcher = arguments.length <= 2 || arguments[2] === undefined ? fetch : arguments[2];
+		var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+		var fetcher = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : fetch;
 
 		_classCallCheck(this, Graphin);
 
@@ -201,7 +201,7 @@ var Graphin = function () {
 	_createClass(Graphin, [{
 		key: '_fetch',
 		value: function _fetch(url) {
-			var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+			var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
 			// If Accept header is not defined set it to application/json
 			if (options.headers === undefined) {
@@ -212,7 +212,7 @@ var Graphin = function () {
 			}
 			return this._fetcher(url, options).then(function (response) {
 				return response.json().then(function (data) {
-					if (response.ok) {
+					if (response.ok && !data.errors) {
 						return data.data;
 					}
 					if (data.errors) {
@@ -239,7 +239,7 @@ var Graphin = function () {
 		value: function query(_query) {
 			var _this2 = this;
 
-			var requestOptions = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+			var requestOptions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
 			var queryURL = this.getQueryURL(_query);
 			var options = Object.assign({}, this._options, requestOptions);
@@ -258,7 +258,7 @@ var Graphin = function () {
 
 			return this._fetch(queryURL, fetchOptions).then(function (data) {
 				if (options.verbose) {
-					console.log('Graphin ' + _stopProfiling() + 'ms ✔︎\n' + normalizeIndent(_query) + '\n' + queryURL);
+					console.log('Graphin ' + _stopProfiling() + 'ms \u2714\uFE0E\n' + normalizeIndent(_query) + '\n' + queryURL);
 				}
 				return data;
 			}).then(function (data) {
@@ -272,7 +272,7 @@ var Graphin = function () {
 				return data;
 			}).catch(function (err) {
 				if (options.verbose) {
-					console.log('Graphin ' + _stopProfiling() + 'ms ✘\n' + normalizeIndent(_query) + '\n' + queryURL);
+					console.log('Graphin ' + _stopProfiling() + 'ms \u2718\n' + normalizeIndent(_query) + '\n' + queryURL);
 				}
 				throw err;
 			});
