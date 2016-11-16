@@ -147,7 +147,7 @@ export default class Graphin {
 			.then(response => {
 				return response.json()
 					.then(data => {
-						if (response.ok) {
+						if (response.ok && !data.errors) {
 							return data.data;
 						}
 						if (data.errors) {
