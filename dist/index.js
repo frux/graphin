@@ -143,7 +143,7 @@ var GraphinError = function (_Error) {
 		var _this = _possibleConstructorReturn(this, (GraphinError.__proto__ || Object.getPrototypeOf(GraphinError)).call(this, errors.message));
 
 		_this.stack = errors.stack;
-		_this.originalErrors = errors.errors;
+		_this.originalErrors = errors.originalErrors;
 		_this.url = errors.url;
 		return _this;
 	}

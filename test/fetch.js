@@ -72,3 +72,22 @@ test('Error by response object', t => {
 	const graphin = new Graphin(graphqlEndpoint, {}, fetcher);
 	t.throws(graphin.query(exampleQuery()));
 });
+
+test('Error contains original messages', t => {
+	const fetcher = mockFetch({
+		code: 500,
+		response: {
+			data: {test: null},
+			errors: [
+				{message: 'foo'},
+				{message: 'bar'}
+			]
+		}
+	});
+
+	const graphin = new Graphin(graphqlEndpoint, {}, fetcher);
+	return graphin.query(exampleQuery()).catch(err => {
+		t.true(Array.isArray(err.originalErrors));
+		t.true(err.originalErrors.length === 2);
+	});
+});

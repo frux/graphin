@@ -92,7 +92,7 @@ class GraphinError extends Error {
 			});
 		super(errors.message);
 		this.stack = errors.stack;
-		this.originalErrors = errors.errors;
+		this.originalErrors = errors.originalErrors;
 		this.url = errors.url;
 	}
 }
