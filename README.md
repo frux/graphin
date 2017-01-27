@@ -14,7 +14,7 @@ graphin.query(`{
 		email
 	}
 }`)
-	.then(list => {
+	.then(data => {
 		console.log(data.userList);
 	});
 
